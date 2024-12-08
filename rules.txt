@@ -1,0 +1,48 @@
+% We difine the 9x9 sudoku board
+assign(domain_size, 9).     
+
+formulas(assumptions).
+
+% number(x, y) defines each little square of the grid
+
+% On each row there is at most one number of each type
+all row all col1 all col2 (value(row, col1) = value(row, col2) -> col1 = col2).
+
+% On each row there is at least one number of each type
+all row all number exists col (value(row, col) = number).
+
+% On each column there is at most one number of each type
+all row1 all row2 all col (value(row1, col) = value(row2, col) -> row1 = row2).
+
+% On each column there is at least one number of each type
+all col all number exists row (value(row, col) = number).
+
+
+% Besides the big square, we also have 9 smaller squares (their dimension is 3x3)
+% The grupps of rows and columns that form these squares: [0, 1, 2], [3, 4, 5], [6, 7, 8]
+% same_square(x, y) defines these regions (as a compbination of numbers that define the squares)
+all x all y (same_square(x, y) -> same_square(y, x)).
+all x (same_square(x, x)).
+
+same_square(0, 1). same_square(1, 2). same_square(2, 0).
+
+same_square(3, 4). same_square(4, 5). same_square(5, 3).
+
+same_square(6, 7). same_square(7, 8). same_square(8, 6).
+
+-same_square(0, 3). -same_square(0, 4). -same_square(0, 5). -same_square(0, 6). -same_square(0, 7). -same_square(0, 8).
+-same_square(1, 3). -same_square(1, 4). -same_square(1, 5). -same_square(1, 6). -same_square(1, 7). -same_square(1, 8).
+-same_square(2, 3). -same_square(2, 4). -same_square(2, 5). -same_square(2, 6). -same_square(2, 7). -same_square(2, 8).
+
+-same_square(3, 0). -same_square(3, 1). -same_square(3, 2). -same_square(3, 6). -same_square(3, 7). -same_square(3, 8).
+-same_square(4, 0). -same_square(4, 1). -same_square(4, 2). -same_square(4, 6). -same_square(4, 7). -same_square(4, 8).
+-same_square(5, 0). -same_square(5, 1). -same_square(5, 2). -same_square(5, 6). -same_square(5, 7). -same_square(5, 8).
+
+-same_square(6, 0). -same_square(6, 1). -same_square(6, 2). -same_square(6, 3). -same_square(6, 4). -same_square(6, 5).
+-same_square(7, 0). -same_square(7, 1). -same_square(7, 2). -same_square(7, 3). -same_square(7, 4). -same_square(7, 5).
+-same_square(8, 0). -same_square(8, 1). -same_square(8, 2). -same_square(8, 3). -same_square(8, 4). -same_square(8, 5).
+
+% Based on the previous function same square(x, y) we difine the points x and y that are part of the same small square
+all row1 all col1 all row2 all col2 (same_square(row1, row2) & same_square(col1, col2) & value(row1, col1) = value(row2, col2) -> row1 = row2 & col1 = col2).
+
+end_of_list.
